@@ -187,7 +187,7 @@ function Fretboard({
   tuning,
   positions,
   markMode,
-  numFrets = 12,
+  numFrets = 15,
 }: {
   tuning: string[];
   positions: (number | null)[][];
@@ -208,8 +208,6 @@ function Fretboard({
   }
 
   // 下から6弦〜1弦となるように逆順で描画
-  // s: 0=6弦（いちばん下）, s: num-1=1弦（いちばん上）
-
   const reversedTuning = [...tuning].reverse();
   const reversedPositions = [...positions].reverse();
 
@@ -219,7 +217,7 @@ function Fretboard({
       {reversedTuning.map((_, s) =>
         <line
           key={s}
-          x1={nutWidth + fretSpacing * 1} // ← ここを1フレットからに
+          x1={nutWidth + fretSpacing * 1}
           y1={stringSpacing * s + 28}
           x2={width - 14}
           y2={stringSpacing * s + 28}
@@ -229,15 +227,15 @@ function Fretboard({
       )}
       {/* フレット */}
       {Array(numFrets + 1).fill(0).map((_, f) =>
-        f === 0 ? null : ( // 0フレットは描画しない
+        f === 0 ? null : (
         <line
           key={f}
           x1={nutWidth + fretSpacing * f}
           y1={26}
           x2={nutWidth + fretSpacing * f}
           y2={height - 22}
-          stroke={f === 0 ? "#666" : "#aaa"}
-          strokeWidth={f === 1 ? 6 : 2} // 1フレットだけ太く
+          stroke="#aaa"
+          strokeWidth={f === 1 ? 6 : 2}
         />
         )
       )}
@@ -254,30 +252,35 @@ function Fretboard({
       )}
       {/* ポジションマーク */}
       {reversedPositions.map((frets, s) =>
-        frets.map((pos, f) => pos !== null && (
-          <g key={s + "-" + f}>
-            <circle
-              cx={nutWidth + fretSpacing * f + fretSpacing / 2}
-              cy={stringSpacing * s + 28}
-              r={circleRadius}
-              fill="#2c9"
-              stroke="#0b7"
-              strokeWidth={2}
-            />
-            <text
-              x={nutWidth + fretSpacing * f + fretSpacing / 2}
-              y={stringSpacing * s + 34}
-              fontSize={13}
-              textAnchor="middle"
-              fill="#184"
-              fontWeight="bold"
-            >
-              {markMode === "interval"
-                ? INTERVALS[pos % 12]
-                : NOTE_NAMES[pos % 12]}
-            </text>
-          </g>
-        ))
+        frets.map((pos, f) => {
+          if (pos === null) return null;
+          // Rのとき色を濃くする
+          const isRoot = markMode === "interval" && INTERVALS[pos % 12] === "R";
+          return (
+            <g key={s + "-" + f}>
+              <circle
+                cx={nutWidth + fretSpacing * f + fretSpacing / 2}
+                cy={stringSpacing * s + 28}
+                r={circleRadius}
+                fill={isRoot ? "#097" : "#2c9"}
+                stroke={isRoot ? "#065" : "#0b7"}
+                strokeWidth={2}
+              />
+              <text
+                x={nutWidth + fretSpacing * f + fretSpacing / 2}
+                y={stringSpacing * s + 34}
+                fontSize={13}
+                textAnchor="middle"
+                fill={isRoot ? "#021" : "#184"}
+                fontWeight="bold"
+              >
+                {markMode === "interval"
+                  ? INTERVALS[pos % 12]
+                  : NOTE_NAMES[pos % 12]}
+              </text>
+            </g>
+          );
+        })
       )}
       {/* 弦名 */}
       {reversedTuning.map((note, s) =>
