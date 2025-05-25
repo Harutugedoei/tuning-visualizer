@@ -7,6 +7,7 @@ const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", 
 const TUNING_PRESETS: Record<string, string[]> = {
   "Standard (6弦)": ["E", "A", "D", "G", "B", "E"],
   "P4th (6弦)": ["E", "A", "D", "G", "C", "F"],
+  "P5th (6弦)": ["C", "G", "D", "A", "E", "B"],
   "Drop D": ["D", "A", "D", "G", "B", "E"],
   "Open G": ["D", "G", "D", "G", "B", "D"],
   "7弦 Standard": ["B", "E", "A", "D", "G", "B", "E"],
